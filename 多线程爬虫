@@ -1,0 +1,97 @@
+import json
+import requests
+import threading
+
+class pda(object):
+    def __init__(self):
+        self.list = []
+    def login(self):
+        headers = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Host': '172.19.16.24',
+            'Referer': 'http://172.19.16.24/Login.aspx?action=loginout',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
+
+        }
+
+        url = "http://172.19.16.24/Login.aspx?action=DoLogin&_=0.980748971344579"
+
+        data = "__VIEWSTATE=%2FwEPDwUKLTU5Mzk1NTM3OQ9kFgICAQ9kFgQCAw8PZBYGHgVWYWx1ZQUgM2ZhYzM1ZTJhMWRkZjlmMmFmYzNhYzNjMTEyMTMxYWEeAmVuBSAzZmFjMzVlMmExZGRmOWYyYWZjM2FjM2MxMTIxMzFhYR4Hb25rZXl1cAUYcmV0dXJuIGNsZWFya2V5dXAodGhpcyk7ZAIFDxBkZBYBZmQYAQUeX19Db250cm9sc1JlcXVpcmVQb3N0QmFja0tleV9fFgEFCnJlbWViZXJQd2R3ES85q28E6CzF2Tmig8ZSxNZYDkdI1glXI37W1UJ6Qw%3D%3D" \
+               "&hidPageStyle=eap" \
+               "&t_password=3fac35e2a1ddf9f2afc3ac3c112131aa" \
+               "&t_passwordtext=" \
+               "&t_username=002587" \
+               "&t_usernametext="
+
+        cookie = requests.post(url, data, headers=headers).cookies.get_dict()
+
+        return cookie
+
+    def data(self,n):
+        data1 = "caller=5" \
+                "&ctn=LYDataBrowse1" \
+                "&ctrlKind=LYDataBrowse" \
+                "&curPage={}" \
+                "&f=" \
+                "&fDic=%255B%257B%2522Text%2522%3A%2522BAR_CODE%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522BAR_CODE2%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522INOUT_TYPE%2522%2C%2522Value%2522%3A%25221%2522%257D%2C%257B%2522Text%2522%3A%2522BAR_TYPE%2522%2C%2522Value%2522%3A%25220%2522%257D%2C%257B%2522Text%2522%3A%2522MACHINE_TYPE_CODE%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522CAGE_BAR_CODE%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522b_date%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522e_date%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522OUT_WORKSHOP_CODE%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522IN_WORKSHOP_CODE%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522WORKSHOP_CODE%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522DEPARTMENT_CODE%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522DEPARTMENT_CODE_in%2522%2C%2522Value%2522%3A%2522%2522%257D%2C%257B%2522Text%2522%3A%2522OUT_WORK_LINE%2522%2C%2522Value%2522%3A%25221MC21B01%2522%257D%2C%257B%2522Text%2522%3A%2522PART_CODE%2522%2C%2522Value%2522%3A%2522B%2522%257D%2C%257B%2522Text%2522%3A%2522REMARK%2522%2C%2522Value%2522%3A%2522%2522%257D%255D" \
+                "&formid=Form_20210203160651433042" \
+                "&FormPageGuid=1c766d66-f9cf-4a3a-8b2d-3ef6be321712" \
+                "&IsOutData=0" \
+                "&ltype=3" \
+                "&optKind=setdata" \
+                "&pageSize=10" \
+                "&relationValue=" \
+                "&sfl=" \
+                "&sr=" \
+                "&tb=" \
+                "&wh="
+        data = []
+        for i in range(1,n):
+            data.append(data1.format(i))
+
+        return data
+
+    def response(self, data):
+        headers = {
+
+            'Host': '172.19.16.24',
+            'Referer': 'http://172.19.16.24/QS/WebForm/default/Form_Form_20210203160651433042.aspx?formid=Form_20210203160651433042&bnttype=&caller=5&status=5&mainRecordID=null&menuID=c4be43ab-165d-429d-a93b-48bc65484411&wID=Form_20210203160651433042&rn=0.9418381414174135',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+
+        url1 = "http://172.19.16.24/QS/ashx/GetCtrlData.ashx"
+
+
+        str2 = requests.post(url1, data, headers=headers, cookies=self.login()).text
+        j = json.loads(str2)
+        # print(j)
+        self.list.append(j)
+
+
+    def parse1(self, a):
+        Thread_list=[]
+        for l in self.data(a):
+            thread = threading.Thread(target=self.response,args=[l])
+            thread.start()
+            Thread_list.append(thread)
+
+        for t in Thread_list:
+            t.join()
+
+        print(self.list)
+        #
+        #
+        # aa = self.response(a)
+        # list = []
+        # for one_part in aa["rows"]:
+        #     list.append(one_part['料笼号'])
+        # list_PDAchuku = set(list)
+        #
+        # return list_PDAchuku
+
+
+
+aa=pda()
+print(aa.parse1(100))
